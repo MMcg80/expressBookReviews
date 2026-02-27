@@ -44,9 +44,51 @@ regd_users.post("/login", (req,res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
-});
+    const isbn = req.params.isbn;
+    const reviewContent = req.query.review; // Taking review from request query
+    const username = req.session.authorization['username']; // Retrieved from session
+  
+    if (!books[isbn]) {
+      return res.status(404).json({ message: "Book not found." });
+    }
+  
+    if (!reviewContent) {
+      return res.status(400).json({ message: "Review content is required in query." });
+    }
+  
+    // Key logic: use the username as the key inside the reviews object
+    // If reviews["john_doe"] exists, it overwrites it. 
+    // If not, it creates a new entry for "john_doe".
+    books[isbn].reviews[username] = reviewContent;
+  
+    return res.status(200).json({ 
+      message: `Review for ISBN ${isbn} by user ${username} has been added/updated.` 
+    });
+  });
+
+  // Delete a book review
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    const isbn = req.params.isbn;
+    const username = req.session.authorization['username']; // Get user from session
+  
+    if (!books[isbn]) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+  
+    // Check if the user has a review for this book
+    if (books[isbn].reviews[username]) {
+      // Delete only the review belonging to this user
+      delete books[isbn].reviews[username];
+      
+      return res.status(200).json({ 
+        message: `Review for ISBN ${isbn} by user ${username} deleted.` 
+      });
+    } else {
+      return res.status(404).json({ 
+        message: "No review found for this user on this ISBN." 
+      });
+    }
+  });
 
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
