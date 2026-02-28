@@ -36,7 +36,7 @@ regd_users.post("/login", (req,res) => {
     req.session.authorization = {
       accessToken, username
     }
-    return res.status(200).send("User successfully logged in");
+    return res.status(200).send('{"message":"Login successful!"}');
   } else {
     return res.status(208).json({message: "Invalid Login. Check username and password"});
   }
@@ -45,8 +45,8 @@ regd_users.post("/login", (req,res) => {
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
     const isbn = req.params.isbn;
-    const reviewContent = req.query.review; // Taking review from request query
-    const username = req.session.authorization['username']; // Retrieved from session
+    const reviewContent = req.query.review;
+    const username = req.session.authorization['username']; 
   
     if (!books[isbn]) {
       return res.status(404).json({ message: "Book not found." });
@@ -56,9 +56,6 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
       return res.status(400).json({ message: "Review content is required in query." });
     }
   
-    // Key logic: use the username as the key inside the reviews object
-    // If reviews["john_doe"] exists, it overwrites it. 
-    // If not, it creates a new entry for "john_doe".
     books[isbn].reviews[username] = reviewContent;
   
     return res.status(200).json({ 
