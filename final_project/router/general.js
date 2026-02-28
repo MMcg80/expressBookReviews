@@ -108,19 +108,26 @@ public_users.get('/author/:author', async (req, res) => {
   });
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
+public_users.get('/title/:title', async function (req, res) {
   //Write your code here
+  try{
   const title =  req.params.title.toLowerCase();
-  const all_isbns = Object.keys(books);
   
   // Find the book that matches the title
-  const book = all_isbns.find(isbn => books[isbn].title.toLowerCase() === title);
+  const book = await new Promise((resolve) => {
+    const all_isbns = Object.keys(books);
+    const isbn = all_isbns.find(isbn => books[isbn].title.toLowerCase() === title);
+    resolve({isbn:isbn, ...books[isbn]});
+  });
 
   if (book) {
-    return res.status(200).json({isbn: book, ...books[book]});
+    return res.status(200).json(book);
   } else {
     return res.status(404).json({ message: "No book found with this title" });
   }
+    } catch (error) {
+      return res.status(500).json({ message: "Error retrieving books", error: error.message });
+  } 
 });
 //   let bookByTitle = [];
 
