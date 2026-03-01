@@ -12,6 +12,8 @@ app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUni
 
 app.use("/customer/auth/*", function auth(req,res,next){
 //Write the authenication mechanism here
+console.log("Current Session ID:", req.sessionID);
+    console.log("Session Data:", req.session.authorization);
 if (req.session.authorization) {
     let token = req.session.authorization['accessToken'];
 
