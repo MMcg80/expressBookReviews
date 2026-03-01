@@ -73,6 +73,7 @@ public_users.get('/isbn/:isbn', async function (req, res) {
       });
   
       const book = await getBookByISBN;
+      console.log("Book found:", book.title);
       res.status(200).send(JSON.stringify(book, null, 4));
   
     } catch (error) {
