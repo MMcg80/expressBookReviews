@@ -37,13 +37,11 @@ regd_users.post("/login", (req,res) => {
       accessToken, username
     }
     
-    req.session.save((err) => {
-        if (err) {
-            return res.status(500).json({message: "Session save failed"});
-        }
-        return res.status(200).json({message: "Login successful!"});
-    });
-}
+    return res.status(200).send('{"message":"Login successful!"}');
+  } else {
+    return res.status(208).json({message: "Invalid Login. Check username and password"});
+  }
+});
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {

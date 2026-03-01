@@ -117,7 +117,11 @@ public_users.get('/title/:title', async function (req, res) {
   const book = await new Promise((resolve) => {
     const all_isbns = Object.keys(books);
     const isbn = all_isbns.find(isbn => books[isbn].title.toLowerCase() === title);
-    resolve({isbn:isbn, ...books[isbn]});
+    if (isbn) {
+        resolve({isbn: isbn, ...books[isbn]});
+    } else {
+        resolve(null);
+    }
   });
 
   if (book) {
